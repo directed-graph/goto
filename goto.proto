@@ -14,7 +14,10 @@ message LinkGroup {
   map<string, LinkGroup> links_by_group = 2;
 }
 
-// Next tag: 2
+// Next tag: 3
 message Config {
   LinkGroup links = 1;
+
+  // The default URL to use if none is specified. Applies globally.
+  string default_url = 2;
 }
