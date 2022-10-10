@@ -51,8 +51,10 @@ class GotoProcessor:
     """Processes each LinkGroup recursively."""
     logging.info('Processing at: %s', current_directory)
 
-    if link_group.url:
-      self.link_by_path[current_directory / 'index.html'] = link_group.url
+    if link_group.url or self.config.default_url:
+      self.link_by_path[
+          current_directory /
+          'index.html'] = link_group.url or self.config.default_url
 
     for child_link_group_name, child_link_group in link_group.links_by_group.items(
     ):
