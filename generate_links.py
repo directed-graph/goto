@@ -37,35 +37,33 @@ def generate_files(link_by_path: Dict[pathlib.Path, str]) -> None:
       stream.write(_HTML_TEMPLATE.format(url=link))
 
 
-def process_link_group(link_group: goto_pb2.LinkGroup,
-                       current_directory: pathlib.Path,
-                       link_by_path: Dict[pathlib.Path, str]) -> None:
-  """Processes each LinkGroup recursively.
+class GotoProcessor:
+  """Processes the given Goto Config into a path to URL mapping."""
 
-  Args:
-    link_group: The LinkGroup to be processed recursively.
-    current_directory: The current directory of the links.
-    link_by_path: Output parameter mapping path to link.
-  """
-  logging.info('Processing at: %s', current_directory)
+  def __init__(self, config: goto_pb2.Config, output_directory: pathlib.Path):
+    """Initializes the processor with the Config and path starting point."""
+    self.config = config
+    self.output_directory = output_directory
+    self.link_by_path = {}
 
-  if link_group.url:
-    link_by_path[current_directory / 'index.html'] = link_group.url
+  def _process_link_group(self, link_group: goto_pb2.LinkGroup,
+                          current_directory: pathlib.Path) -> None:
+    """Processes each LinkGroup recursively."""
+    logging.info('Processing at: %s', current_directory)
 
-  for child_link_group_name, child_link_group in link_group.links_by_group.items(
-  ):
-    process_link_group(child_link_group,
-                       current_directory / child_link_group_name, link_by_path)
+    if link_group.url:
+      self.link_by_path[current_directory / 'index.html'] = link_group.url
 
+    for child_link_group_name, child_link_group in link_group.links_by_group.items(
+    ):
+      self._process_link_group(child_link_group,
+                               current_directory / child_link_group_name)
 
-def process_config(config: goto_pb2.Config,
-                   current_directory: pathlib.Path) -> Dict[pathlib.Path, str]:
-  """Processes each LinkGroup in the top level."""
-  link_by_path = {}
-
-  process_link_group(config.links, current_directory, link_by_path)
-
-  return link_by_path
+  def process(self) -> Dict[pathlib.Path, str]:
+    """Processes the given Config and returns a mapping of path to URL."""
+    if not self.link_by_path:
+      self._process_link_group(self.config.links, self.output_directory)
+    return self.link_by_path
 
 
 def main(argv) -> None:
@@ -79,7 +77,8 @@ def main(argv) -> None:
     text_format.Parse(stream.read(), config)
 
   logging.info('Processing goto.Config:\n%s', str(config))
-  generate_files(process_config(config, pathlib.Path(_OUTPUT_DIRECTORY.value)))
+  generate_files(
+      GotoProcessor(config, pathlib.Path(_OUTPUT_DIRECTORY.value)).process())
 
 
 if __name__ == '__main__':

@@ -50,7 +50,7 @@ class GenerateLinksTest(parameterized.TestCase):
             }))
 
     self.assertEqual(
-        generate_links.process_config(config, pathlib.Path('/')), {
+        generate_links.GotoProcessor(config, pathlib.Path('/')).process(), {
             pathlib.Path('/index.html'): 'url_top',
             pathlib.Path('/link_0/index.html'): 'url',
             pathlib.Path('/link_0/link_0/index.html'): 'url_0',
