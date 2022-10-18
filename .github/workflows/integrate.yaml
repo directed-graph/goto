@@ -1,0 +1,23 @@
+
+
+name: Integrate
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    container:
+      image: implementing/builder:latest
+      volumes:
+        - /bazel/cache/goto:/mnt/cache
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: bazel test --test_output=all :all
+
+      - run: bazel build :generate_links.par
