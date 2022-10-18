@@ -1,0 +1,19 @@
+# proto-file: goto.proto
+# proto-name: everchanging.goto.Config
+
+default_url: "https://everchanging.dev"
+
+links {
+  links_by_group {
+    key: "projects"
+    value {
+      links_by_group {
+        key: "goto"
+        value {
+          url: "https://github.com/directed-graph/goto"
+        }
+      }
+    }
+  }
+}
+
