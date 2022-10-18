@@ -1,0 +1,34 @@
+
+
+name: Regen
+
+on:
+  push:
+    branches: [ master, web ]
+
+  workflow_dispatch:
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bazelbuild/setup-bazelisk@v2
+      - uses: actions/checkout@v3
+        with:
+          path: goto
+          ref: master
+      - uses: actions/checkout@v3
+        with:
+          path: web
+          ref: web
+      - run: mkdir -p /tmp/goto
+      - run: cp $GITHUB_WORKSPACE/web/docs/CNAME /tmp/goto/CNAME
+      - run: rm -rf $GITHUB_WORKSPACE/web/docs
+      - run: bazel run :generate_links -- --config_file $GITHUB_WORKSPACE/web/config.textproto --output_directory $GITHUB_WORKSPACE/web/docs
+        working-directory: goto
+      - run: mv /tmp/goto/CNAME $GITHUB_WORKSPACE/web/docs
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Automatic regen of links
+          file_pattern: 'docs/*'
+          repository: web
