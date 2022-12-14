@@ -15,5 +15,22 @@ links {
       }
     }
   }
+  links_by_group {
+    key: "ins"
+    value {
+      links_by_group {
+        key: "bike"
+        value {
+          url: "https://www.instagram.com/p/CkTs9pIP9iI/"
+        }
+      }
+      links_by_group {
+        key: "holo"
+        value {
+          url: "https://www.instagram.com/p/CkB_3ZcSV-A/"
+        }
+      }
+    }
+  }
 }
 
