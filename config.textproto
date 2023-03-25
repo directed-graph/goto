@@ -36,6 +36,12 @@ links {
           url: "https://www.instagram.com/p/CkB_3ZcSV-A/"
         }
       }
+      links_by_group {
+        key: "steak"
+        value {
+          url: "https://www.instagram.com/p/CmSmaGHpUDD/"
+        }
+      }
     }
   }
 }
