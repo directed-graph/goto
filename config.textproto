@@ -44,5 +44,28 @@ links {
       }
     }
   }
+  links_by_group {
+    key: "profiles"
+    value {
+      links_by_group {
+        key: "github"
+        value {
+          url: "https://github.com/directed-graph"
+        }
+      }
+      links_by_group {
+        key: "instagram"
+        value {
+          url: "https://www.instagram.com/instant_analog/"
+        }
+      }
+      links_by_group {
+        key: "strava"
+        value {
+          url: "https://www.strava.com/athletes/108546168"
+        }
+      }
+    }
+  }
 }
 
